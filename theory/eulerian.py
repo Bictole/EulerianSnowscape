@@ -194,7 +194,9 @@ def add_edges(n, edges):
 def make_eulerian_great_again(n, edges):
     add_edge = add_edges(n,edges)
     return is_eulerian(n, add_edge)
-    
+
+
+   
 
 #print(add_edges(3, [(0,1,4),(1,2,3)]))
 #print(add_edges(4, [(0,1,1),(0,2,1),(0,3,1)]))
