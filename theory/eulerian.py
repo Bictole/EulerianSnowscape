@@ -8,7 +8,8 @@ Created on Thu May  6 16:52:49 2021
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 import math
-
+import time
+import sys
 
 def odd_vertices(n, edges):
     deg = [0] * n
@@ -100,13 +101,36 @@ def single_source_distances(n,edges,src):
             return None
     return dist
 
+def all_pairs_shortest_path(n, cost):
+    for k in range(n):
+        print(k)
+        for i in range(n):
+            for j in range(n):
+                if cost[i][k] + cost[k][j] < cost[i][j]:
+                    cost[i][j] = cost[i][k] + cost[k][j]
+    return cost
+
 def add_edges(n, edges):
-    print(edges)
-    
-    plus_court_chemin = []
+    '''
+    mat = np.full((n,n), math.inf)
+    for a , b, w in edges:
+        mat[a][b] = w
+    plus_court_chemin = all_pairs_shortest_path(n, mat)
+    sys.stdout.write("Begin")
     for i in range(n):
+        percent = i / n * 100
+        start_time = time.time()
         plus_court_chemin.append(single_source_distances(n,edges, i))
-    
+        compute_time = time.time() - start_time
+        time_left = compute_time * n - compute_time * i
+        if (time_left / 60 > 1):
+            nb_minutes = time_left // 60
+            nb_seconds = time_left % 60
+            sys.stdout.write("Processing: {:.2f}% - {} minutes and {:.2f} seconds left\n".format( percent, nb_minutes, nb_seconds))
+        else:
+            sys.stdout.write("Processing: {:.2f}% - {:.2f} seconds left\n".format( percent, time_left))
+        sys.stdout.flush()
+    '''
     mat = build_adj_mat(n,edges)
     sum_col = np.sum(mat, axis=0)
     sum_line = np.sum(mat, axis=1)
@@ -125,11 +149,32 @@ def add_edges(n, edges):
     bipartie = []
     indices_line = []
     indices_col = []
+    dist = []
+    compute_time = time.time()
+    start_time = time.time()
+    print(len(surcharge))
+    print(len(souscharge))
+    for j in range(n):
+        if j in surcharge:
+            percent = (j / len(surcharge)) * 100
+            dist.append(single_source_distances(n, edges, j))
+            compute_time = time.time() - start_time
+            time_left = compute_time * (len(surcharge) - (j + 1)) / (j + 1)
+            if (time_left / 60 > 1):
+                nb_minutes = time_left // 60
+                nb_seconds = time_left % 60
+                sys.stdout.write("Processing: {:.2f}% - {} minutes and {:.2f} seconds left\n".format( percent, nb_minutes, nb_seconds))
+            else:
+                sys.stdout.write("Processing: {:.2f}% - {:.2f} seconds left\n".format( percent, time_left))
+            sys.stdout.flush()
+        else:
+            dist.append([])
+        
     for line,i in enumerate(souscharge):
         indices_line.append(i)
         weight = []
         for col,j in enumerate(surcharge):
-            weight.append(plus_court_chemin[j][i])
+            weight.append(dist[j][i])
             if (line == 0):
                 indices_col.append(j)
         bipartie.append(weight)
@@ -153,7 +198,7 @@ def make_eulerian_great_again(n, edges):
 
 #print(add_edges(3, [(0,1,4),(1,2,3)]))
 #print(add_edges(4, [(0,1,1),(0,2,1),(0,3,1)]))
-print(make_eulerian_great_again(9,[(0,1,3),(1,2,5),(1,5,4),(2,4,2),(2,3,4),(5,4,5),(5,6,3),(4,8,4),(4,6,6),(6,7,3),(8,6,4), (2,1,5),(4,2,2),(5,1,4),(6,4,6),(7,6,3),(5,0,7),(3,2,4)]))
+#print(make_eulerian_great_again(9,[(0,1,3),(1,2,5),(1,5,4),(2,4,2),(2,3,4),(5,4,5),(5,6,3),(4,8,4),(4,6,6),(6,7,3),(8,6,4), (2,1,5),(4,2,2),(5,1,4),(6,4,6),(7,6,3),(5,0,7),(3,2,4)]))
 
     #print(add_edges(4,[(0,1,3),(0,2,11),(1,2,5),(2,3,1),(3,0,3)]))    
 #print(add_edges(7, [(0, 1, 11), (0, 4, 3), (0, 5, 7), (0, 6, 5), (1, 2, 11), (2, 3, 11), (3, 0, 11), (4, 3, 1), (5, 2, 5), (6, 1, 3)]))    

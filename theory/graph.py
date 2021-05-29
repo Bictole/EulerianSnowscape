@@ -35,8 +35,8 @@ def print_graph_with_labels(n, edges, path):
 def print_graph_with_weights(n, edges):
     G = nx.MultiDiGraph()
     G.add_weighted_edges_from(edges)
-    pos = nx.spring_layout(G, seed=42)
-    nx.draw(G, pos, with_labels=True)
+    pos = nx.circular_layout(G)
+    nx.draw(G, pos, with_labels=True,connectionstyle='arc3, rad = 0.1')
     labels = nx.get_edge_attributes(G,'weight')
     weight_labels = {}
     for a in labels:

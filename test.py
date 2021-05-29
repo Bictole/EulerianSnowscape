@@ -2,7 +2,14 @@
 
 from re import X
 from theory.graph import *
+from theory.eulerian import *
 import osmnx as ox
+import time
+import sys
+
+# %%
+
+#%%
 # Get the city graph (from OpenStreetMap), filter only the drive ways
 city = ox.graph_from_place('Montreal, Canada', network_type='drive')
 #%%
@@ -52,7 +59,6 @@ nb = 0
 for n in city.nodes():
     city_to_algo[n] = nb
     algo_to_city[nb] = n
-    degree[nb] = n
     nb += 1
 
 edges = []
@@ -68,11 +74,13 @@ print(is_eulerian(len(city), edges))
 print(len(edges))
 # %%
 #%%
-
 path = question_1_1(len(city), edges)
-
 # %%
 
 #%%
-print_graph_with_labels(len(city), edges, path)
+start_time = time.time()
+if len(edges[0]) == 2:
+    edges = [(a, b, 0) for (a, b) in edges]
+print(make_eulerian_great_again(city.number_of_nodes(), edges))
+print("Time: ", time.time() - start_time)
 #%%
