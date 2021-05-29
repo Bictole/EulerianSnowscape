@@ -53,7 +53,6 @@ def build_capacity_mat(n, mat):
 def flow_graph(n, mat):
     capacity_mat = build_flow_max_graph(n,mat)
     graph = csr_matrix(capacity_mat)
-    print(graph, "\n")
     flow = maximum_flow(graph, n, n+1)
     return flow.residual
 
