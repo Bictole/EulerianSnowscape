@@ -10,20 +10,12 @@ import numpy as np
 from scipy.sparse.csgraph import maximum_flow
 from scipy.sparse import csr_matrix
 
-
+from tools import *
 
 def build_flow_max_graph(n, mat):
-    sum_col = np.sum(mat, axis=0)
-    sum_line = np.sum(mat, axis=1)
-    souscharge = []
-    surcharge = []
     
-    for i in range(n):
-        if (sum_col[i] > sum_line[i]):
-            souscharge.append(i)
-                
-        elif (sum_line[i] > sum_col[i]):
-            surcharge.append(i)
+    sum_line, sum_col = compute_degrees(mat)
+    surcharge,souscharge = compute_charge(sum_line, sum_col, n)
                 
     result = build_capacity_mat(n+2, mat)
     
@@ -57,17 +49,19 @@ def flow_graph(n, mat):
     return flow.residual
 
 def orient_graph(n, mat):
-    graph = flow_graph(n, mat).toarray()
+    m = [a.copy() for a in mat]
+    graph = flow_graph(n, m).toarray()
+    
     for i in range(n):
         for j in range(n):
             w = graph[i][j]
             if (w > 0):
-                mat[i][j] = 0
+                m[i][j] = 0
             elif (w == 0):
-                if (mat[i][j] == 1):
-                    mat[j][i] = 0
-            
-    return mat
+                if (m[i][j] > 0):
+                    m[j][i] = 0
+                    
+    return m
     
     
     

@@ -4,7 +4,8 @@ Created on Sat May 29 18:33:09 2021
 
 @author: morin
 """
-from eulerian import build_adj_mat
+from eulerian import build_adj_mat_weighted
+from eulerian import make_eulerian
 from oriented_edge import orient_graph
 
 import networkx as nx
@@ -31,9 +32,11 @@ def mat_to_edges(n, mat):
     return edge
 
 def main(n, edges):
-    mat = build_adj_mat(n,edges)
-    mat = orient_graph(n, mat)
-    print_graph_with_weights(n,mat_to_edges(n,mat))
+    #print_graph_with_weights(n,edges)
+    mat = build_adj_mat_weighted(n,edges)
+    oriented_mat = orient_graph(n, mat)
+    final_mat = make_eulerian(n, mat, oriented_mat, edges)
+    print_graph_with_weights(n,mat_to_edges(n,final_mat))
     
 
 main(4, [(0,1,3),(0,2,11),(1,2,5),(2,3,1),(3,0,3), (0,3,3), (2,1,5), (1,0,3)])

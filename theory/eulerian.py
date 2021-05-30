@@ -11,6 +11,8 @@ import math
 import time
 import sys
 
+from tools import *
+
 def odd_vertices(n, edges):
     deg = [0] * n
     for (a,b,w) in edges:
@@ -189,7 +191,54 @@ def add_edges(n, edges):
                 
 
     return edges
-  
+
+def make_eulerian(n, mat, ort_mat, edges):
+
+    sum_col,sum_line = compute_degrees(ort_mat)
+    surcharge, souscharge = compute_charge(sum_line,sum_col,n)
+      
+    bipartie = []
+    indices_line = []
+    indices_col = []
+    dist = []
+    compute_time = time.time()
+    start_time = time.time()
+
+    for j in range(n):
+        if j in surcharge:
+            percent = (j / len(surcharge)) * 100
+            dist.append(single_source_distances(n, edges, j))
+            compute_time = time.time() - start_time
+            time_left = compute_time * (len(surcharge) - (j + 1)) / (j + 1)
+            if (time_left / 60 > 1):
+                nb_minutes = time_left // 60
+                nb_seconds = time_left % 60
+                sys.stdout.write("Processing: {:.2f}% - {} minutes and {:.2f} seconds left\n".format( percent, nb_minutes, nb_seconds))
+            else:
+                sys.stdout.write("Processing: {:.2f}% - {:.2f} seconds left\n".format( percent, time_left))
+            sys.stdout.flush()
+        else:
+            dist.append([])
+        
+    for line,i in enumerate(souscharge):
+        indices_line.append(i)
+        weight = []
+        for col,j in enumerate(surcharge):
+            weight.append(dist[j][i])
+            if (line == 0):
+                indices_col.append(j)
+        bipartie.append(weight)
+        
+
+    best_path = linear_sum_assignment(bipartie)
+
+    for k in range(len(best_path[0])):
+        i = best_path[0][k]
+        j = best_path[1][k]
+        ort_mat[indices_col[j]][indices_line[i]] = bipartie[i][j]
+                
+
+    return ort_mat
 
 def make_eulerian_great_again(n, edges):
     add_edge = add_edges(n,edges)
