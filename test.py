@@ -1,86 +1,70 @@
-#%%
-
-from re import X
-from theory.graph import *
-from theory.eulerian import *
-import osmnx as ox
-import time
-import sys
-
-# %%
 
 #%%
-# Get the city graph (from OpenStreetMap), filter only the drive ways
-city = ox.graph_from_place('Montreal, Canada', network_type='drive')
-#%%
-#%%
-# Display the graph
-ox.plot_graph(city)
-#%%
+# Test make_connected
+from theory.graph import make_connected, np_build_adj_mat_directed_weighted
+
+
+n = 2
+bad_edges = [(0,1,2)]
+mat = np_build_adj_mat_directed_weighted(n , bad_edges)
+print(mat)
+print(make_connected(n , mat))
 
 #%%
+G = nx.Graph()
 
 
-#%%
-import networkx as nx 
-
-print("Number of nodes: ", city.number_of_nodes())
-print("Number of edges: ", city.number_of_edges())
-print("List of all nodes: \n", city.nodes())
-print()
-print("List of all edges: \n", city.edges())
-print()
-print("Degree for all nodes: \n", dict(city.degree()))
-print()
-
-
-# %%
+path = question_1_1(n,bad_edges)
+print_graph_with_labels(n, bad_edges, path)
+#for e in G.edges():
+#    G[e[0]][e[1]]['color'] = 'black'
+#for i in range(len(p)-1):
+#    G[p[i]][p[i+1]]['color'] = 'red'
+#edge_color_list = [ G[e[0]][e[1]]['color'] for e in G.edges() ]
 
 #%%
-a = city.nodes().get(4492648682)
+# Make eulerian edge case
+# TEST 1
+make_eulerian_test = [(0, 1), (0, 2), (0, 3)]
+
+no_seen_make_eulerian(4, make_eulerian_test)
+print_graph(make_eulerian_test)
+print(make_eulerian_test)
 #%%
 
 # %%
-# Get general degree for each nodes
-degree = list(city.degree())
-# Get in-degree for each nodes
-in_degree = list(city.in_degree())
-# Get out-degree for each nodes
-out_degree = list(city.out_degree())
+# TEST 2
+make_eulerian_test2 = [(0,2), (1,3), (2,3), (3, 4), (4, 2)]
+print_graph(make_eulerian_test2)
 
+# %%
+no_seen_make_eulerian(5, make_eulerian_test2)
+print_graph(make_eulerian_test2)
+print(make_eulerian_test2)
+# %%
+# TEST 3
+test3 = [(0, 1), (0,2), (0,3), (3,4), (3,5), (3,6)]
+print_graph(test3)
+#%%
+#%%
+no_seen_make_eulerian(7, test3)
+print_graph(test3)
+print(test3)
 # %%
 
 # %%
-# Adapt the graph to our algorithm
-city_to_algo = {}
-algo_to_city = {}
+weighted_edges = [(0, 1, 3), (0,2, 4), (0,3, -1), (3,4, 2), (3,5, 4), (3,6, 1)]
+print_graph_with_weights(7, weighted_edges)
 
-nb = 0
-for n in city.nodes():
-    city_to_algo[n] = nb
-    algo_to_city[nb] = n
-    nb += 1
-
-edges = []
-for e in city.edges():
-    edges.append((city_to_algo[e[0]], city_to_algo[e[1]]))
-
-#%%
-#%%
-print(len(edges))
-print(is_eulerian(len(city), edges))
-naive_make_eulerian(odd_vertices(len(city), edges), edges)
-print(is_eulerian(len(city), edges))
-print(len(edges))
-# %%
-#%%
-path = question_1_1(len(city), edges)
 # %%
 
-#%%
-start_time = time.time()
-if len(edges[0]) == 2:
-    edges = [(a, b, 0) for (a, b) in edges]
-print(make_eulerian_great_again(city.number_of_nodes(), edges))
-print("Time: ", time.time() - start_time)
-#%%
+#print(add_edges(3, [(0,1,4),(1,2,3)]))
+#print(add_edges(4, [(0,1,1),(0,2,1),(0,3,1)]))
+#print(make_eulerian_great_again(9,[(0,1,3),(1,2,5),(1,5,4),(2,4,2),(2,3,4),(5,4,5),(5,6,3),(4,8,4),(4,6,6),(6,7,3),(8,6,4), (2,1,5),(4,2,2),(5,1,4),(6,4,6),(7,6,3),(5,0,7),(3,2,4)]))
+
+    #print(add_edges(4,[(0,1,3),(0,2,11),(1,2,5),(2,3,1),(3,0,3)]))    
+#print(add_edges(7, [(0, 1, 11), (0, 4, 3), (0, 5, 7), (0, 6, 5), (1, 2, 11), (2, 3, 11), (3, 0, 11), (4, 3, 1), (5, 2, 5), (6, 1, 3)]))    
+        
+#main(4, [(0,1,3),(0,2,11),(1,2,5),(2,3,1),(3,0,3), (0,3,3), (2,1,5), (1,0,3)])
+#print_graph_with_weights(3,[(0,1,1),(1,2,1),(2,0,1),(0,2,1)])
+#print(flow_graph(3,[(0,1),(1,2),(2,0),(0,2)]))

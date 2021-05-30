@@ -1,3 +1,6 @@
 cache
 __pycache__
 theory/__pycache__
+graph.png
+application/__pycache__
+application/cache

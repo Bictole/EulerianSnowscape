@@ -1,16 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat May 29 16:29:27 2021
-
-@author: morin
-"""
-from eulerian import build_adj_mat
 import scipy as sp
 import numpy as np
 from scipy.sparse.csgraph import maximum_flow
 from scipy.sparse import csr_matrix
 
-from tools import *
+from theory.tools import *
 
 def build_flow_max_graph(n, mat):
     
@@ -26,9 +19,7 @@ def build_flow_max_graph(n, mat):
     for j in souscharge:
         result[j][sink] = sum_col[j] - sum_line[j]
         
-        
     return result
-
 
 def build_capacity_mat(n, mat):
     M = []
@@ -42,6 +33,7 @@ def build_capacity_mat(n, mat):
                 M[j][i] = 1
     return M
 
+
 def flow_graph(n, mat):
     capacity_mat = build_flow_max_graph(n,mat)
     graph = csr_matrix(capacity_mat)
@@ -49,7 +41,7 @@ def flow_graph(n, mat):
     return flow.residual
 
 def orient_graph(n, mat):
-    m = [a.copy() for a in mat]
+    m = mat.copy()
     graph = flow_graph(n, m).toarray()
     
     for i in range(n):
@@ -62,6 +54,3 @@ def orient_graph(n, mat):
                     m[j][i] = 0
                     
     return m
-    
-    
-    
