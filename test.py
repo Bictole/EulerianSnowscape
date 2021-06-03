@@ -1,6 +1,7 @@
 
 #%%
 # Test make_connected
+from theory.eulerian import is_eulerian_weighted, make_eulerian
 from theory.graph import make_connected, np_build_adj_mat_directed_weighted
 
 
@@ -11,6 +12,30 @@ print(mat)
 print(make_connected(n , mat))
 
 #%%
+import theory.print_tools as pt
+from theory.oriented_edge import orient_graph
+from theory.graph import *
+from theory.eulerian import *
+from theory.tools import *
+# Test make_eulerian
+n = 4
+#edges = [(0,1,3),(0,2,11),(1,2,5),(2,3,1),(2,1,5), (1,0,3)]
+#edges = [(0,1,1),(1, 0,2), (0,2,3), (2, 0, 4)]
+edges = [(0,1,1), (1,0,2), (0,2,3),(2,0,4),(3,2,5),(2,3,6)]
+oriented_edges = [(0,1,1), (0,2,3),(3,2,5)]
+pt.print_graph(edges)
+#%%
+mat = np_build_adj_mat_directed_weighted(n, edges)
+orient_mat = orient_graph(n,mat)
+oriented_mat = np_build_adj_mat_directed_weighted(n, oriented_edges)
+print(oriented_mat)
+euler_mat = make_eulerian(n, oriented_mat, edges)
+print(euler_mat)
+edges = mat_to_edges(n, euler_mat)
+print(is_eulerian_weighted(n, edges))
+pt.print_graph(edges)
+#%%
+'''
 G = nx.Graph()
 
 
@@ -68,3 +93,4 @@ print_graph_with_weights(7, weighted_edges)
 #main(4, [(0,1,3),(0,2,11),(1,2,5),(2,3,1),(3,0,3), (0,3,3), (2,1,5), (1,0,3)])
 #print_graph_with_weights(3,[(0,1,1),(1,2,1),(2,0,1),(0,2,1)])
 #print(flow_graph(3,[(0,1),(1,2),(2,0),(0,2)]))
+'''

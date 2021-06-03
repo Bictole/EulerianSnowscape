@@ -1,20 +1,27 @@
 #%%
 import sys
+
+from networkx.algorithms.components.strongly_connected import strongly_connected_components
 sys.path.insert(0,"..")
 from re import X
-from networkx.classes.function import get_edge_attributes
+from networkx.classes.function import get_edge_attributes, induced_subgraph
 from theory.graph import *
 from theory.eulerian import *
 from theory.main import main
 from application.city_tools import *
 import networkx as nx 
 import osmnx as ox
+import osmnx.utils_graph as ox_utils
 import time
+ox.config(log_console=True, use_cache=True)
 #%%
 # Get the city graph (from OpenStreetMap), filter only the drive ways
-city = ox.graph_from_place('Les Crottes, France', network_type='drive')
+city = ox.graph_from_place('Froideville, France', network_type='drive')
 #%%
 # Display the graph
+ox.plot_graph(city)
+#%%
+city = ox_utils.get_largest_component(city, strongly=True)
 ox.plot_graph(city)
 #%%
 print("City data:\n")
@@ -40,6 +47,7 @@ out_degree = list(city.out_degree())
 # path = question_1_1(len(city), edges)
 #%%
 # Final city test
+np.set_printoptions(threshold=np.inf)
 start_time = time.time()
 print(main(city.number_of_nodes(), edges))
 print("Time: ", time.time() - start_time)

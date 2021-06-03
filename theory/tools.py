@@ -1,11 +1,11 @@
 import numpy as np
 
 def compute_degrees(mat):
-    no_weight_mat = np.matrix(mat)
+    no_weight_mat = mat.copy()
     no_weight_mat[no_weight_mat>0] = 1
     
-    sum_col = np.sum(no_weight_mat, axis=0).flatten().tolist()[0]
-    sum_line = np.sum(no_weight_mat, axis=1).flatten().tolist()[0]
+    sum_col = np.sum(no_weight_mat, axis=0)
+    sum_line = np.sum(no_weight_mat, axis=1)
     
     return (sum_line,sum_col)
 

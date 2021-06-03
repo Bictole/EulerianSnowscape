@@ -2,13 +2,13 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 from networkx.algorithms.shortest_paths import weighted
-from theory.graph import build_adj_mat
+from theory.graph import build_adj_mat_directed
 
 # Some print tools
 def print_graph(edges):
     G = nx.MultiDiGraph()
     G.add_edges_from(edges)
-    pos = nx.spring_layout(G, seed=42)
+    pos = nx.circular_layout(G)
     nx.draw(G, pos, with_labels=True,connectionstyle='arc3, rad = 0.1')
     return G , pos
 
@@ -16,7 +16,7 @@ def print_graph(edges):
 def get_labels_from_path(n , edges, path):
     nb = 1
     pos = path[0]
-    mat = build_adj_mat(n, edges)
+    mat = build_adj_mat_directed(n, edges)
     edges_labels = {}
     for i in range(1, len(path)):
         j = 0
@@ -37,10 +37,10 @@ def print_graph_with_labels(n, edges, path):
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edges_labels)
 
 def print_graph_with_weights(n, edges):
-    plt.figure(num=None, figsize=(20, 20), dpi=80)
+    plt.figure(num=None, figsize=(10, 10), dpi=60)
     G = nx.MultiDiGraph()
     G.add_weighted_edges_from(edges)
-    pos = nx.spring_layout(G, seed=42)
+    pos = nx.circular_layout(G)
     nx.draw(G, pos, with_labels=True, width=2, connectionstyle='arc3, rad = 0.1')
     labels = nx.get_edge_attributes(G,'weight')
     weight_labels = {}

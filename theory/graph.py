@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 import networkx as nx
+from networkx.algorithms.cuts import edge_expansion
 import numpy as np
 import math
 from networkx.algorithms.shortest_paths import weighted
 
 def adjlist(n, edges, directed=False):
     lst = [[] for _ in range(n)]
-    for (s,d) in edges:
+    for (s,d, w) in edges:
         lst[s].append(d)
         if not directed:
             lst[d].append(s)
@@ -57,6 +58,13 @@ def odd_vertices_weighted(n, edges):
         deg[b] += 1
     return [a for a in range(n) if deg[a] % 2]
 
+def check_balance_degree(n, edges):
+    in_degree = [0] * n
+    out_degree = [0] * n
+    for (a, b, w) in edges:
+        out_degree[a] += 1
+        in_degree[b] += 1
+    return [i for i in range(n) if in_degree[i] - out_degree[i] != 0]
 
 def degree_vertices(n, edges):
     deg = [0] * n
@@ -109,7 +117,6 @@ def is_edge_connected_weighted(n, edges):
     succ = [[] for a in range(n)]
     for (a,b, w) in edges:
         succ[a].append(b)
-        succ[b].append(a)
     # BFS over the graph, starting from one extremity of the first edge
     touched = [False] * n
     init = edges[0][0]
@@ -156,4 +163,5 @@ def make_connected(n, mat):
         if sum_col[i] == 0:
             index, val = get_smallest_not_zero(mat[i])
             mat[index][i] = val
+            sum_col = np.sum(mat, axis=0)
     return mat
