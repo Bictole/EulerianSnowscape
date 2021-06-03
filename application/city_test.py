@@ -16,13 +16,13 @@ import time
 ox.config(log_console=True, use_cache=True)
 #%%
 # Get the city graph (from OpenStreetMap), filter only the drive ways
-city = ox.graph_from_place('Froideville, France', network_type='drive')
+city = ox.graph_from_place('Saint Paul Trois Chateaux, France', network_type='drive')
 #%%
 # Display the graph
 ox.plot_graph(city)
 #%%
 city = ox_utils.get_largest_component(city, strongly=True)
-ox.plot_graph(city)
+#ox.plot_graph(city)
 #%%
 print("City data:\n")
 n = city.number_of_nodes()

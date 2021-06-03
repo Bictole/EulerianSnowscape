@@ -1,3 +1,4 @@
+import enum
 import matplotlib.pyplot as plt
 import networkx as nx
 from networkx.algorithms.cuts import edge_expansion
@@ -150,6 +151,7 @@ def all_pairs_shortest_path(n, cost):
                 if cost[i][k] + cost[k][j] < cost[i][j]:
                     cost[i][j] = cost[i][k] + cost[k][j]
     return cost
+
 def get_smallest_not_zero(L):
     index = np.argmax(L)
     for j in range(len(L)):
@@ -164,4 +166,93 @@ def make_connected(n, mat):
             index, val = get_smallest_not_zero(mat[i])
             mat[index][i] = val
             sum_col = np.sum(mat, axis=0)
+    sum_line = np.sum(mat, axis=1)
+    for i in range(n):
+        if sum_line[i] == 0:
+            index, val = get_smallest_not_zero(mat[:,i])
+            mat[i][index] = val
+            sum_line = np.sum(mat, axis=1)
+    return mat
+
+def scc(n, edges):
+    # Convert to adjacency list
+    succ = [[] for _ in range(n)]
+    for (s,d,w) in edges:
+        succ[s].append(d)
+    # Dijkstra-based SCC enumeration, using a live stack as in Tarjan
+    # 
+    # Since only a single pass of the automaton is necessary, we will destroy
+    # the adjacency list as the DFS processes the edges, this way we only need to
+    # keep a stack of states.
+    inscc = [None] * n  # the number of the SCC containing each state
+
+    scc.n = 0 # the number of SCCs discovered so far 
+ 
+    index = [0] * n  # discovery index of each vertex
+    scc.next_index = 1
+    
+    def dfs(s):
+        stack = [s]
+        live = [s]
+        index[s] = scc.next_index
+        roots = [scc.next_index]
+        scc.next_index += 1
+        while stack:
+            src = stack[-1]
+            if len(succ[src]) == 0:  # all successors processed, backtrack
+                stack.pop()
+                if index[src] == roots[-1]:
+                    # Unwind the live stack.  
+                    # All vertices until src belong to the same SCC.
+                    while True:
+                        x = live.pop()
+                        inscc[x] = scc.n
+                        if x == src:
+                            break
+                    scc.n += 1
+                    roots.pop()
+            else: # we have one successor
+                dst = succ[src].pop()
+                idst = index[dst]
+                if idst > 0:  # a previously visited vertex 
+                    if inscc[dst] is None: # but not yet in a known SCC
+                        # pop all roots greater that idst
+                        while roots[-1] > idst:
+                            roots.pop()
+                else: # a new vertex
+                    index[dst] = scc.next_index
+                    roots.append(scc.next_index)
+                    scc.next_index += 1
+                    stack.append(dst)
+                    live.append(dst)
+    for s in range(n):
+        if inscc[s] is None:
+            dfs(s)
+    return inscc, scc.n
+
+def make_strongly_connected(n, edges):
+    composantes, nb_composantes = scc(n, edges)
+    mat = np_build_adj_mat_directed_weighted(n, edges)
+    if nb_composantes == 1:
+        return mat
+    seen = [False] * nb_composantes 
+    for index, comp in enumerate(composantes):
+        if False not in seen:
+            break
+        if not seen[comp]:
+            find = False
+            for succ, weight in enumerate(mat[index]):
+                if weight and composantes[succ] != comp:
+                    mat[succ][index] = weight
+                    edges.append((succ, index, weight))
+                    find = True
+                    break
+            if find:
+                continue
+            for pred, weight in enumerate(mat[:,index]):
+                if weight and composantes[pred] != comp:
+                    mat[index][pred] = weight
+                    edges.append((index, pred, weight))
+                    find = True
+                    break
     return mat
