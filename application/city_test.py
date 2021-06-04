@@ -16,7 +16,7 @@ import time
 ox.config(log_console=True, use_cache=True)
 #%%
 # Get the city graph (from OpenStreetMap), filter only the drive ways
-city = ox.graph_from_place('Saint Paul Trois Chateaux, France', network_type='drive')
+city = ox.graph_from_place('Montreal, Canada', network_type='drive')
 #%%
 # Display the graph
 ox.plot_graph(city)

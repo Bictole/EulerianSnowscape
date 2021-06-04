@@ -29,7 +29,15 @@ def city_to_edges_names(city):
             edges.append((city_to_algo[n1], city_to_algo[n2], "undefined"))
     return edges
 
-def print_route(n, city, split_path, estimate_time):
+def city_to_coords(city):
+    nb = 0
+    nodes = [(0, 0)] * city.number_of_nodes()
+    for n , data in city.nodes(data=True):
+        nodes[nb] = (data['x'], data['y'])
+        nb += 1
+    return nodes 
+
+def print_snowplow_route(n, city, split_path, estimate_time):
     edges = city_to_edges_names(city)
     M = []
     for _ in range (0, n):
@@ -38,7 +46,7 @@ def print_route(n, city, split_path, estimate_time):
         M[u][v] = name 
 
     for nb, path in enumerate(split_path):
-        file = open("Itinéraire déneigeuse " + str(nb + 1), "w")
+        file = open("Itinéraire_déneigeuse_" + str(nb + 1) + ".txt", "w")
         file.write("Temps estimée: " +  str(estimate_time[nb]) + " heures\n")
         file.write("Départ déneigeuse " + str(nb + 1) + "\n")
         pos = path[0]
@@ -51,6 +59,16 @@ def print_route(n, city, split_path, estimate_time):
         file.write("Arrivé dénéigeuse "+ str(nb + 1) + "\n")
         print(file.name + ": Done")
         file.close()
+
+def print_drone_route(n, city, path, nodes_coords):
+    file = open("Itinéraire_drone.txt", "w")
+    file.write("Départ drone\n")
+    for i in range(0, len(path)):
+        file.write("-> " + str(nodes_coords[path[i]]) + "\n")
+    
+    file.write("Arrivé drone\n")
+    print(file.name + ": Done")
+    file.close()
 
 def compute_time(n, edges, split_path, speed):
     mat = np_build_adj_mat_directed_weighted(n ,edges)

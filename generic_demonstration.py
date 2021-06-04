@@ -1,8 +1,7 @@
 from networkx.algorithms.shortest_paths.unweighted import predecessor
 from numpy import unsignedinteger
-from theory.graph import get_path_total_weight
 from theory.main import main
-from application.city_tools import  city_to_edges_names, city_to_edges_weighted, compute_time, print_route
+from application.city_tools import   city_to_edges_weighted, compute_time, print_snowplow_route
 import osmnx as ox
 import osmnx.utils_graph as ox_utils
 
@@ -19,7 +18,6 @@ while True:
 # Retire les noeuds qui ne permettent pas à la ville d'être strongly connected
 city = ox_utils.get_largest_component(city, strongly=True)
 
-print("Voici le plan de la ville à déneiger:")
 ox.plot_graph(city)
 
 # Nombre de déneigeuse en service
@@ -38,7 +36,7 @@ while True:
 speed = 0
 while True:
     try:
-        speed = int(input("Entrez la vitesse moyenne d'une déneigeuse: "))
+        speed = int(input("Entrez la vitesse moyenne (km/h) d'une déneigeuse: "))
         if speed < 0:
             print("Veuillez entrer un nombre positif !")
             continue
@@ -53,11 +51,58 @@ n = city.number_of_nodes()
 edges = city_to_edges_weighted(city)
 
 # Algorithme principal, renvoit la liste des cycles à parcourir en fonction du nombre de déneigeuses
-split_path = main(n , edges, nb_split)
+print()
+split_path, cumulate_weight = main(n , edges, nb_split)
 
 # Calcule le temps estimée pour chaque cycle (en heures)
 estimate_time = compute_time(n, edges, split_path, speed)
 
 # Enregistre les itinéraires pour chaque déneigeuses dans des fichiers
-print_route(n, city, split_path, estimate_time)
+print()
+print("Génération des fichiers d'itinéraires des déneigeuses:")
+print_snowplow_route(n, city, split_path, estimate_time)
 
+print()
+total_weight = cumulate_weight[len(cumulate_weight) -1] 
+print("Distance totale du chemin:", total_weight / 1000, "km")
+
+prix_carburant = 0
+while True:
+    try:
+        prix_carburant = float(input("Entrez le prix en carburant d'une déneigeuse: "))
+        if prix_carburant < 0:
+            print("Veuillez entrer un nombre positif !")
+            continue
+        break
+    except ValueError:
+        print("Veuillez entrer un nombre valide !")
+
+consomation_carburant = 0
+while True:
+    try:
+        consomation_carburant = int(input("Entrez la consomation en carburant (L/100km) d'une déneigeuse: "))
+        if consomation_carburant < 0:
+            print("Veuillez entrer un nombre positif !")
+            continue
+        break
+    except ValueError:
+        print("Veuillez entrer un nombre valide !")
+
+carburant_total = int(prix_carburant * consomation_carburant / 100 * total_weight / 1000)
+print("Coût du carburants des déneigeuses", carburant_total, "€")
+
+cout_de_location = 0
+while True:
+    try:
+        cout_de_location= int(input("Entrez le coût de location à l'heure d'une déneigeuse: "))
+        if cout_de_location < 0:
+            print("Veuillez entrer un nombre positif !")
+            continue
+        break
+    except ValueError:
+        print("Veuillez entrer un nombre valide !")
+
+location_total = int(cout_de_location * (total_weight / 1000) / speed) * nb_split
+print("Coût de location des déneigeuses", location_total, "€")
+
+print("Coût total: ", carburant_total + location_total, "€")

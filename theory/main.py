@@ -11,7 +11,8 @@ from networkx.algorithms.shortest_paths import weighted
 
 def main(n, edges, nb_split):
 
-    print("Le graphe est-il eulérien ?", is_eulerian_weighted(n, edges))
+    if not is_eulerian_weighted(n, edges):
+        print("Le graphe est-il eulérien de base ?", is_eulerian_weighted(n, edges))
     # Rend le graphe strongly connected 
     mat = make_strongly_connected(n, edges)
 
@@ -35,6 +36,6 @@ def main(n, edges, nb_split):
     # Découpe le path en plusieurs paths de poids équivalent en 
     # incluant le point de départ et le retour en fonction du nombre nb_split
     path_split = split_path(path, cumulate_weight, nb_split)
-    return path_split
+    return path_split, cumulate_weight
 
     

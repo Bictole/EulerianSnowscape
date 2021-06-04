@@ -1,2 +1,39 @@
 # APPERO
 
+# Architecture
+
+Le dossier "theory" contient les fichiers relatifs aux algorithmes utilisés pour récupérer les cycles eulériens à partir d'un graphe:
+    - drone.py : fonctions relatives à la création du parcours du drone
+    - eulerian.py : fonctions relatives au cycle eulérien (vérification,recherche, creation, ...)
+    - graph.py : fonctions relatives aux graphes
+    - main.py : fonction principale exécutant les différents algorithmes pour récupérer les itinéraires des déneigeuses
+    - oriented_edge.py : fonctions relatives à l'orientation du graphe
+    - print_tools.py : fonctions relatives à l'affichage des graphes
+    - test.py : tests unitaires pour la partie théorique
+    - tools.py : fonctions utiles
+
+Le dossier "application" contient les fichiers relatifs à l'application de nos algorithmes de l'arborescence "theory" à des villes:
+    - city_test.py : tests pour l'application des algorithmes sur une ville
+    - city_tools.py : fonctions utiles à la transformation des données de la ville pour nos algorithmes
+
+
+# Mandatory
+
+Installer python3 et pip
+
+Optionnel :
+    - Créer un environnement virtuel:
+        - pip install virtualenv
+        - python3 -m venv venv
+        - source venv/bin/activate
+
+Installer les packets requis:
+    - python3 install -r requirements.txt
+
+# Demonstration
+
+Pour executer la démonstration sur la ville de Montréal (France):
+    - python3 demonstration.py
+
+Pour executer la démonstration générique (permet de modifier les paramètres utilisés):
+    - python3 generic_demonstration.py

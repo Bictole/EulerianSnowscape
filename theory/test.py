@@ -4,7 +4,6 @@
 from theory.eulerian import is_eulerian_weighted, make_eulerian
 from theory.graph import make_connected, np_build_adj_mat_directed_weighted
 
-
 n = 2
 bad_edges = [(0,1,2)]
 mat = np_build_adj_mat_directed_weighted(n , bad_edges)
@@ -35,12 +34,11 @@ edges = mat_to_edges(n, euler_mat)
 print(is_eulerian_weighted(n, edges))
 pt.print_graph(edges)
 #%%
-'''
 G = nx.Graph()
 
 
 path = question_1_1(n,bad_edges)
-print_graph_with_labels(n, bad_edges, path)
+pt.print_graph_with_labels(n, bad_edges, path)
 #for e in G.edges():
 #    G[e[0]][e[1]]['color'] = 'black'
 #for i in range(len(p)-1):
@@ -53,23 +51,23 @@ print_graph_with_labels(n, bad_edges, path)
 make_eulerian_test = [(0, 1), (0, 2), (0, 3)]
 
 no_seen_make_eulerian(4, make_eulerian_test)
-print_graph(make_eulerian_test)
+pt.print_graph(make_eulerian_test)
 print(make_eulerian_test)
 #%%
 
 # %%
 # TEST 2
 make_eulerian_test2 = [(0,2), (1,3), (2,3), (3, 4), (4, 2)]
-print_graph(make_eulerian_test2)
+pt.print_graph(make_eulerian_test2)
 
 # %%
 no_seen_make_eulerian(5, make_eulerian_test2)
-print_graph(make_eulerian_test2)
+pt.print_graph(make_eulerian_test2)
 print(make_eulerian_test2)
 # %%
 # TEST 3
 test3 = [(0, 1), (0,2), (0,3), (3,4), (3,5), (3,6)]
-print_graph(test3)
+pt.print_graph(test3)
 #%%
 #%%
 no_seen_make_eulerian(7, test3)
@@ -93,4 +91,3 @@ print_graph_with_weights(7, weighted_edges)
 #main(4, [(0,1,3),(0,2,11),(1,2,5),(2,3,1),(3,0,3), (0,3,3), (2,1,5), (1,0,3)])
 #print_graph_with_weights(3,[(0,1,1),(1,2,1),(2,0,1),(0,2,1)])
 #print(flow_graph(3,[(0,1),(1,2),(2,0),(0,2)]))
-'''
