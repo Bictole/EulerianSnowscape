@@ -3,7 +3,7 @@ from networkx.algorithms.shortest_paths.unweighted import predecessor
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse.csgraph import shortest_path
 from scipy.sparse.csr import csr_matrix
-from theory.graph import adjlist, check_balance_degree, is_edge_connected, np_build_adj_mat_directed_weighted, odd_vertices, is_edge_connected_weighted, odd_vertices_weighted, single_source_distances
+from theory.graph import is_edge_connected_unoriented_weighted, predecessor_shortest_path, adjlist, check_balance_degree, is_edge_connected, np_build_adj_mat_directed_weighted, odd_vertices, is_edge_connected_weighted, odd_vertices_weighted, single_source_distances
 import numpy as np
 import math
 import time
@@ -16,6 +16,9 @@ def is_eulerian(n, edges):
 
 def is_eulerian_weighted(n, edges):
     return is_edge_connected_weighted(n, edges) and not check_balance_degree(n, edges)
+
+def is_eulerian_unoriented_weighted(n, edges):
+    return is_edge_connected_unoriented_weighted(n, edges) and not odd_vertices_weighted(n, edges)
 
 def find_eulerian_cycle(n, edges):
     if len(edges) == 0:
@@ -52,6 +55,8 @@ def find_eulerian_cycle_weighted(n, edges):
         for (a, b, w) in edges:
             if cycle[-1] == a:
                 cycle.append(b)
+            elif cycle[-1] == b:
+                cycle.append(a)
             else:
                 rest.append((a,b,w))
         if not rest:
@@ -77,12 +82,7 @@ def find_eulerian_cycle_weighted_custom(n, edges, nb_add_edges, predecessor):
         for (a, b, w) in edges:
             if cycle[-1] == a:
                 if (a,b,w) in added_edges:
-                    pos = predecessor[a][b]
-                    shortest_path = [b]
-                    while pos >= 0 and pos != a:
-                        shortest_path.insert(0, pos)
-                        pos = predecessor[a][pos]
-                    cycle += shortest_path
+                    cycle += predecessor_shortest_path(a, b, predecessor)
                 else:
                     cycle.append(b)
             else:

@@ -26,7 +26,7 @@ city = ox_utils.get_largest_component(city, strongly=True)
 #%%
 print("City data:\n")
 n = city.number_of_nodes()
-edges = city_to_algo(city)
+edges = city_to_edges_weighted(city)
 print("Number of nodes: ", city.number_of_nodes())
 print("Number of edges: ", city.number_of_edges())
 #print("List of all nodes: \n", city.nodes())

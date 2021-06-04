@@ -111,6 +111,31 @@ def is_edge_connected(n, edges):
             return False
     return True
 
+def is_edge_connected_unoriented_weighted(n, edges):
+    if n == 0 or len(edges) == 0:
+        return True
+    # Convert to adjacency list
+    succ = [[] for a in range(n)]
+    for (a,b, w) in edges:
+        succ[a].append(b)
+        succ[b].append(a)
+    # BFS over the graph, starting from one extremity of the first edge
+    touched = [False] * n
+    init = edges[0][0]
+    touched[init] = True
+    todo = [init]
+    while todo:
+        s = todo.pop()
+        for d in succ[s]:
+            if touched[d]:
+                continue
+            touched[d] = True
+            todo.append(d)
+    for a in range(n):
+        if succ[a] and not touched[a]:
+            return False
+    return True
+
 def is_edge_connected_weighted(n, edges):
     if n == 0 or len(edges) == 0:
         return True
@@ -256,3 +281,44 @@ def make_strongly_connected(n, edges):
                     find = True
                     break
     return mat
+
+def get_path_cumulate_weight(n, edges, path):
+    mat = np_build_adj_mat_directed_weighted(n ,edges)
+    pos = path[0]
+    total_weight = 0
+    cumulate_weight = [0]
+    for i in range(1, len(path)):
+        total_weight += mat[pos][path[i]]
+        cumulate_weight.append(total_weight)
+        pos = path[i]
+    return cumulate_weight
+
+def split_path(path, cumulate_weight, nb_split):
+    chunk_size = cumulate_weight[-1] / nb_split
+    split_path = []
+    actual_chunk_index = 0
+    actual_chunk = 0
+    for i in range(1, len(path)):
+        if cumulate_weight[i] - actual_chunk >= chunk_size:
+            split_path.append(path[actual_chunk_index:i])
+            actual_chunk_index = i
+            actual_chunk = cumulate_weight[i]
+    if actual_chunk_index != len(path) - 1:
+        split_path.append(path[actual_chunk_index:])
+    return split_path
+
+def predecessor_shortest_path(a, b, predecessor):
+    pos = predecessor[a][b]
+    shortest_path = [b]
+    while pos >= 0 and pos != a:
+        shortest_path.insert(0, pos)
+        pos = predecessor[a][pos]
+    return shortest_path
+
+def origin_to_split(split_path, predecessor):
+    origin = split_path[0][0]
+    for path in split_path:
+        start = path[0]
+        end = path[-1]
+        path = predecessor_shortest_path(origin, start, predecessor) + path + predecessor_shortest_path(end, origin, predecessor)
+    return split_path
