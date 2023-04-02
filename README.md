@@ -5,6 +5,9 @@
 [title-img]:https://img.shields.io/badge/-Bictole-pink
 [profile]:https://github.com/bictole
 
+<img src="https://github.com/Bictole/Appero/blob/master/theory/neige-tempete-deneigeuse.jpg" align="right" alt="Appero logo" width="250" height="250">
+
+
 ## Authors
 
 [Victor Simonin](https://github.com/Bictole)\
