@@ -5,6 +5,15 @@
 [title-img]:https://img.shields.io/badge/-Bictole-pink
 [profile]:https://github.com/bictole
 
+## Authors
+
+[Victor Simonin](https://github.com/Bictole)\
+[Alexandre Lemonnier](https://github.com/Alex-Leme)\
+[Adrien Anton Ludwig](https://github.com/Adrien-ANTON-LUDWIG)\
+[Jeanne Morin](https://github.com/jeannemorin)
+
+---
+
 ## Architecture
 
 The `theory` folder contains files related to the algorithms used to retrieve Eulerian cycles from a graph:
