@@ -1,16 +1,16 @@
 <img align="right" src="https://visitor-badge.laobi.icu/badge?page_id=bictole.appero&right_color=pink">
 
-# Appero [![Profile][title-img]][profile]
+# Eulerian Snowscape [![Profile][title-img]][profile]
 
 [title-img]:https://img.shields.io/badge/-Bictole-pink
 [profile]:https://github.com/bictole
 
 ## Authors
 
-[Victor Simonin](https://github.com/Bictole)\
-[Alexandre Lemonnier](https://github.com/Alex-Leme)\
+[Bictole](https://github.com/Bictole)\
+[Alex-Leme](https://github.com/Alex-Leme)\
 [Adrien Anton Ludwig](https://github.com/Adrien-ANTON-LUDWIG)\
-[Jeanne Morin](https://github.com/jeannemorin)
+[jeannemorin](https://github.com/jeannemorin)
 
 ---
 
